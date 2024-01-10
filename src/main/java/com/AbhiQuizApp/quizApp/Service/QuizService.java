@@ -4,7 +4,9 @@ import com.AbhiQuizApp.quizApp.Constants.Category;
 import com.AbhiQuizApp.quizApp.Dao.QuizDao;
 import com.AbhiQuizApp.quizApp.Model.Question;
 import com.AbhiQuizApp.quizApp.Model.Quiz;
+import com.AbhiQuizApp.quizApp.Model.QuizClientDTO;
 import com.AbhiQuizApp.quizApp.Repository.QuestionRepository;
+import com.AbhiQuizApp.quizApp.Mapper.QuizMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ public class QuizService {
     @Autowired
     private QuizDao quizDao;
 
+    @Autowired
+    private QuizMapper quizMapper;
     @Autowired
     private QuestionRepository questionRepository;
 
@@ -44,7 +48,12 @@ public class QuizService {
         return "FAILED";
     }
 
-    public Optional<Quiz> getQuiz(Integer quizId) {
-        return quizDao.findById(quizId);
+    public QuizClientDTO getQuiz(Integer quizId) {
+        Optional<Quiz> optionalQuiz = quizDao.findById(quizId);
+        QuizClientDTO quizClientDTO = null;
+        if(optionalQuiz.isPresent()){
+            quizClientDTO = quizMapper.quizToQuizClientDTO(optionalQuiz.get());
+        }
+        return quizClientDTO;
     }
 }
